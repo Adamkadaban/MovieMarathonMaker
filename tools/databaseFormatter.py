@@ -63,8 +63,8 @@ for line in movieIDToInfo:
 		year = line[5]
 		movieName = line[2]
 		
-
-		movieName += " (" + str(year) + ")"
+		if(year != "\\N"):
+			movieName += " (" + str(year) + ")"
 
 		
 		# movie ID, movie Title, Movie runtime, actorIDs
@@ -121,12 +121,15 @@ for movie in data:
 	actorIDs.extend(actors)
 	
 
-print(data[0])
+# print(data[0])
 
+with open('Database.tsv', 'w') as fout:
+	for line in data:
+	  temp = line[-1]
+	  del line[-1]
+	  line.extend(temp)
 
+	  del line[0]
 
-
-
-
-
+	  fout.write("\t".join(line) + '\n')
 
