@@ -1,0 +1,5 @@
+# Ignore exes
+*.exe
+
+# Ignore base database files
+/tools/resources/
