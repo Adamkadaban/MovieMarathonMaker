@@ -1,15 +1,17 @@
 #include <unordered_set>
 #include <climits>
+#include <vector>
+#include <iostream>
 #include "Graph.h"
 
-pair<string, double> getMin(map<string, vector<pair<string, double>>>& paths, unordered_set<int> avail) {
+pair<string, double> getMin(map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
     //returns the movie that has not been found yet with the shortest path to it
-    pair<string, double> currentShortest = ("NULL", INT_MAX); //shortest movie
+    pair<string, double> currentShortest = make_pair("NULL", (double)INT_MAX); //shortest movie
     map<string, double> totalRunLength; //total run length of all movies in a given movie's path
     for (auto iter : paths) {
         totalRunLength[iter.first] = 0; //initialization
         for (int i = 0; i < iter.second.size(); i++) {
-            totalRunLength[iter.first] += iter.second; 
+            totalRunLength[iter.first] += iter.second.at(i).second; 
         }
     }
     for (auto iter : totalRunLength) {
@@ -53,7 +55,7 @@ double getSum(vector<pair<string, double>>& v) {
     //used to find the current length of movies in a vector
     double sum = 0;
     for (int i = 0; i < v.size(); i++) {
-        sum += v.second;
+        sum += v.at(i).second;
     }
     return sum;
 }
@@ -64,19 +66,19 @@ map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex) {
     unordered_set<string> completed;
     unordered_set<string> notCompleted;
     for (auto iter : adjList) {
-        paths[iter.first]push_back(make_pair("NULL", INT_MAX)); //insert starting value 
+        paths[iter.first].push_back(make_pair("NULL", (double)INT_MAX)); //insert starting value 
         notCompleted.insert(iter.first);
     }
     
-    (paths[vertex]).at(0).second = 0;
+    (paths[vertex]).clear();
     
     while (!notCompleted.empty()) {
         pair<string, double> index = getMin(paths, notCompleted);
         
         for (auto iter : adjList[index.first]) {
             
-            if (sum(paths[index.first]) + iter.second.second < sum(paths[iter.first])) {
-                if (paths[iter.first].at(0).second == INT_MAX) {
+            if (getSum(paths[index.first]) + iter.second.second < getSum(paths[iter.first])) {
+                if (paths[iter.first].at(0).second == (double)INT_MAX) {
                     paths[iter.first] = paths[index.first];
                     paths[iter.first].push_back(iter.second);
                 }
@@ -91,7 +93,6 @@ map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex) {
            notCompleted.erase(index.first);
         }
         else {
-            cout << "this shouldn't happen";
             break;
         }
         completed.insert(index.first);

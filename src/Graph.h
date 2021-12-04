@@ -12,7 +12,7 @@ class Graph {
         void insertEdge(string actor1, string actor2, string title, double length);
         pair<string, double> getFilm(string actor1, string actor2);
         map<string, pair<string, double>> getAdjacent(string vertex);
-        map<string, map<string, pair<string, double>>> dijkstra(string vertex);
+        map<string, vector<pair<string, double>>> dijkstra(string vertex);
         //other search here
 };
 
