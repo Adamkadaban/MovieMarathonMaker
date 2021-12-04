@@ -7,6 +7,8 @@ Note: This only returns what is listed as a "movie" on the IMDB database
 
 	  Some minor characters will also be excluded
 
+	  Only includes movies, Year >= 1980
+
 '''
 
 import csv
@@ -57,14 +59,14 @@ for line in movieIDToInfo:
 	# data for filtering
 	movieType = line[1]
 	runtime = line[7]
+	year = line[5]
 
-	if(movieType == "movie" and runtime != "\\N" ):
+
+	if(movieType == "movie" and runtime != "\\N" and year != "\\N" and int(year) >= 1980):
 		movieID = line[0]
-		year = line[5]
 		movieName = line[2]
 		
-		if(year != "\\N"):
-			movieName += " (" + str(year) + ")"
+		movieName += " (" + str(year) + ")"
 
 		
 		# movie ID, movie Title, Movie runtime, actorIDs
@@ -123,7 +125,7 @@ for movie in data:
 
 # print(data[0])
 
-with open('Database.tsv', 'w') as fout:
+with open('ModernDatabase.tsv', 'w') as fout:
 	for line in data:
 	  temp = line[-1]
 	  del line[-1]
