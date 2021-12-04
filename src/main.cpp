@@ -7,10 +7,11 @@ using namespace std;
 
 void readData(Graph& g) {
     string line;
-    ifstream myfile ("Database.tsv");
+    ifstream myfile ("../tools/Database.tsv");
     vector<string> vInput;
     if (myfile.is_open()) {
         while (getline (myfile, line)) {
+            vInput.clear();
             int start = 0;
             //converts input string into a vector of strings, split by the ' ' char
             for (int i = 0; i < line.length(); i++) {
@@ -35,10 +36,12 @@ void readData(Graph& g) {
 int main() {
     Graph g;
     readData(g);
-    map<string, vector<pair<string, double>>> paths = g.dijkstra("Person5");
-    for (int i = 0; i < paths["Person8"].size(); i++) {
-        cout << paths["Person8"].at(i).first << " ";
-        cout << paths["Person8"].at(i).second << " ";
+    cout << "data read!" << endl;
+    map<string, vector<pair<string, double>>> paths = g.dijkstra("Daniel Radcliffe");
+    for (int i = 0; i < paths["Emma Watson"].size(); i++) {
+        cout << paths["Emma Watson"].at(i).first << " ";
+        cout << paths["Emma Watson"].at(i).second << " ";
     }
     cout << "Test" << endl;
+    return 0;
 }
