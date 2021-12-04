@@ -7,7 +7,7 @@ Note: This only returns what is listed as a "movie" on the IMDB database
 
 	  Some minor characters will also be excluded
 
-	  Only includes movies, Year >= 1980
+	  Only includes movies, Year >= 2000
 
 '''
 
@@ -62,7 +62,7 @@ for line in movieIDToInfo:
 	year = line[5]
 
 
-	if(movieType == "movie" and runtime != "\\N" and year != "\\N" and int(year) >= 1980):
+	if(movieType == "movie" and runtime != "\\N" and year != "\\N" and int(year) >= 2000):
 		movieID = line[0]
 		movieName = line[2]
 		
