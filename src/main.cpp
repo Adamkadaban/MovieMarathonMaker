@@ -3,9 +3,11 @@
 #include <fstream>
 #include <vector>
 #include "Graph.h"
-void readData(graph& g) {
+using namespace std;
+
+void readData(Graph& g) {
     string line;
-    ifstream myfile ("Database.tsv")
+    ifstream myfile ("Database.tsv");
     vector<string> vInput;
     if (myfile.is_open()) {
         while (getline (myfile, line)) {
@@ -17,7 +19,7 @@ void readData(graph& g) {
                     start = i + 1;
                 }  
             }
-            vInput.push_back(input.substr(start, input.length() - start));
+            vInput.push_back(line.substr(start, line.length() - start));
             for (int i = 2; i < vInput.size(); i++) {
                 for (int j = i + 1; j < vInput.size(); j++) {
                     if (i == j) { //dont want a self-loop!
@@ -33,5 +35,10 @@ void readData(graph& g) {
 int main() {
     Graph g;
     readData(g);
-    g.dijkstra("test");
+    map<string, vector<pair<string, double>>> paths = g.dijkstra("Person5");
+    for (int i = 0; i < paths["Person8"].size(); i++) {
+        cout << paths["Person8"].at(i).first << " ";
+        cout << paths["Person8"].at(i).second << " ";
+    }
+    cout << "Test" << endl;
 }
