@@ -83,7 +83,7 @@ double getSum(vector<pair<string, double>>& v) {
     return sum;
 }
 
-unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex, string destination) {
+/*unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex, string destination) {
     unordered_map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
     unordered_set<string> notCompleted;
     for (auto iter : adjList) {
@@ -110,11 +110,11 @@ unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string verte
         }
     }
     return paths;
-}
+}*/
 
 
-//FIB HEAP DIJKSTRA IN PROGRESS
-/*unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex, string destination) {
+//Fib-Heap dijkstra; optimized version
+unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex, string destination) {
     unordered_map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
     priority_queue<pd, vector<pd>, myComp> minHeap;
     unordered_set<string> notCompleted;
@@ -124,22 +124,14 @@ unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string verte
     for (auto iter : adjList) {
         paths[iter.first].push_back(make_pair("total:", (double)INT_MAX)); //insert starting value 
         notCompleted.insert(iter.first);
-        //minHeap.push(iter.second.at(0)); //causes M_construct null not valid error.
     }
-
-    //this adds every pair in paths to the minheap
-    for (auto iter : paths) {
-        minHeap.push(iter.second.at(0));     
-    }
-
-    (paths[vertex]).at(0).second = 0;
-
+    (paths[vertex]).at(0).second = 0; //init src distance to 0
     while(!minHeap.empty()){ //while not empty
       //extract min
       pair<string, double> index = minHeap.top();
       minHeap.pop();
       notCompleted.erase(index.first);
-      //For every adjacent vertex v of index, check if v is in Min Heap. 
+      
       //If v is in Min Heap and distance value is more than weight of u-v plus distance value of u, then update the distance value of v.
       for (auto iter : adjList[index.first]) {
           if(notCompleted.count(iter.first) == 1){ //if not already in heap
@@ -147,17 +139,18 @@ unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string verte
                 paths[iter.first] = paths[index.first];
                 paths[iter.first].push_back(iter.second);
                 paths[iter.first].at(0).second += iter.second.second;
+
+                minHeap.push(make_pair(iter.first, paths[index.first].at(0).second + iter.second.second));
             }
           }
         }
         if (index.first == destination) {
-            //this is never reached. my minheap is emptying before it finds the solution.
             return paths;
         }
     }
 
     return paths;  
-}*/
+}
 
 unordered_map<string, vector<pair<string, double>>> Graph::aStar(string vertex, string destination) {
     unordered_map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
