@@ -2,8 +2,51 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <chrono>
 #include "Graph.h"
 using namespace std;
+
+class Timer //Timer class credit to mcleary on GitHub, class defintion from https://gist.github.com/mcleary/b0bf4fa88830ff7c882d
+{
+public:
+    void start()
+    {
+        m_StartTime = std::chrono::system_clock::now();
+        m_bRunning = true;
+    }
+    
+    void stop()
+    {
+        m_EndTime = std::chrono::system_clock::now();
+        m_bRunning = false;
+    }
+    
+    double elapsedMilliseconds()
+    {
+        std::chrono::time_point<std::chrono::system_clock> endTime;
+        
+        if(m_bRunning)
+        {
+            endTime = std::chrono::system_clock::now();
+        }
+        else
+        {
+            endTime = m_EndTime;
+        }
+        
+        return std::chrono::duration_cast<std::chrono::milliseconds>(endTime - m_StartTime).count();
+    }
+    
+    double elapsedSeconds()
+    {
+        return elapsedMilliseconds() / 1000.0;
+    }
+
+private:
+    std::chrono::time_point<std::chrono::system_clock> m_StartTime;
+    std::chrono::time_point<std::chrono::system_clock> m_EndTime;
+    bool                                               m_bRunning = false;
+};
 
 void readData(Graph& g) {
     string line;
@@ -33,29 +76,90 @@ void readData(Graph& g) {
     }
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (argc < 4) {
+        cout << "invalid input!" << endl;
+        return -1;
+    }
     Graph g;
     readData(g);
-    cout << "data read!" << endl;
-    /*map<string, vector<pair<string, double>>> paths2 = g.aStar("Daniel Radcliffe", "Emma Watson");
-    paths2["Emma Watson"].at(0).second = 0;
-    for (int i = 1; i < paths2["Emma Watson"].size(); i++) {
-        paths2["Emma Watson"].at(0).second += paths2["Emma Watson"].at(i).second;
+    Timer t;
+    string from = argv[1];
+    string to = argv[3];
+    string function = argv[2];
+    if (function == "dijkstra") {
+        t.start();
+        map<string, vector<pair<string, double>>> paths = g.dijkstra(from, to);
+        t.stop();
+        for (int i = 0; i < paths[to].size(); i++) {
+            cout << paths[to].at(i).first << " ";
+            cout << paths[to].at(i).second << endl;
+        }
+        cout << "dijkstra elapsed time: " << t.elapsedSeconds() << " seconds";
     }
-    for (int i = 0; i < paths2["Emma Watson"].size(); i++) {
-        cout << paths2["Emma Watson"].at(i).first << " ";
-        cout << paths2["Emma Watson"].at(i).second << " ";
+    else if (function == "aStar") {
+        t.start();
+        map<string, vector<pair<string, double>>> paths2 = g.aStar(from, to);
+        t.stop();
+        paths2[to].at(0).second = 0;
+        for (int i = 1; i < paths2[to].size(); i++) {
+            paths2[to].at(0).second += paths2[to].at(i).second;
+        }
+        for (int i = 0; i < paths2[to].size(); i++) {
+            cout << paths2[to].at(i).first << " ";
+            cout << paths2[to].at(i).second << endl;
+        }
+        cout << "aStar elapsed time: " << t.elapsedSeconds() << " seconds";
     }
-    map<string, vector<pair<string, double>>> paths = g.dijkstra("Daniel Radcliffe", "Emma Watson");
-    for (int i = 0; i < paths["Emma Watson"].size(); i++) {
-        cout << paths["Emma Watson"].at(i).first << " ";
-        cout << paths["Emma Watson"].at(i).second << " ";
+    else if (function == "movieStar") {
+        t.start();
+        vector<pair<string, double>> movieS = g.movieStar(from, to);
+        t.stop();
+        double total;
+        for (int i = 0; i < movieS.size(); i++) {
+            total += movieS.at(i).second;
+        }
+        cout << "total: " << total;
+        for (int i = 0; i < movieS.size(); i++) {
+            cout << movieS.at(i).first << " " << movieS.at(i).second;
+        }
+        cout << "movieStar elapsed time: " << t.elapsedSeconds() << " seconds";
     }
-    */
-   vector<pair<string, double>> movieS = g.movieStar("Daniel Radcliffe", "Emma Watson");
-   for (int i = 0; i < movieS.size(); i++) {
-       cout << movieS.at(i).first << movieS.at(i).second;
-   }
-    cout << "Test" << endl;
+    else if (function == "compare") {
+        t.start();
+        map<string, vector<pair<string, double>>> paths = g.dijkstra(from, to);
+        t.stop();
+        for (int i = 0; i < paths[to].size(); i++) {
+            cout << paths[to].at(i).first << " ";
+            cout << paths[to].at(i).second << endl;
+        }
+        cout << "dijkstra elapsed time: " << t.elapsedSeconds() << " seconds" << endl;
+
+        t.start();
+        map<string, vector<pair<string, double>>> paths2 = g.aStar(from, to);
+        t.stop();
+        paths2[to].at(0).second = 0;
+        for (int i = 1; i < paths2[to].size(); i++) {
+            paths2[to].at(0).second += paths2[to].at(i).second;
+        }
+        for (int i = 0; i < paths2[to].size(); i++) {
+            cout << paths2[to].at(i).first << " ";
+            cout << paths2[to].at(i).second << endl;
+        }
+        cout << "aStar elapsed time: " << t.elapsedSeconds() << " seconds" << endl;
+
+        t.start();
+        vector<pair<string, double>> movieS = g.movieStar(from, to);
+        t.stop();
+        double total;
+        for (int i = 0; i < movieS.size(); i++) {
+            total += movieS.at(i).second;
+        }
+        cout << "total: " << total << endl;
+        for (int i = 0; i < movieS.size(); i++) {
+            cout << movieS.at(i).first << " " << movieS.at(i).second << endl;
+        }
+        cout << "movieStar elapsed time: " << t.elapsedSeconds() << " seconds";
+    }
     return 0;
 }

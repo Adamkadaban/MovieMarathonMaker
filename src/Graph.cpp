@@ -108,23 +108,15 @@ map<string, vector<pair<string, double>>> Graph::aStar(string vertex, string des
     }
     
     (paths[vertex]).at(0).second = 0;
-
+    
 
     while (!notCompleted.empty()) {
         pair<string, double> index = getH(paths, notCompleted);
         for (auto iter : adjList[index.first]) {
-            if (paths[index.first].at(0).second + iter.second.second < paths[iter.first].at(0).second) {
-                if (paths[iter.first].at(0).second == INT_MAX) {
-                    paths[iter.first].at(0).second = 0;
-                }
                 paths[iter.first] = paths[index.first];
                 paths[iter.first].push_back(iter.second);
                 paths[iter.first].at(0).second += iter.second.second;
-            }
             if (iter.first == destination) {
-                if (paths[iter.first].at(0).second == INT_MAX) {
-                    paths[iter.first].at(0).second = 0;
-                }
                 paths[iter.first] = paths[index.first];
                 paths[iter.first].push_back(iter.second);
                 paths[iter.first].at(0).second += iter.second.second;
@@ -132,7 +124,6 @@ map<string, vector<pair<string, double>>> Graph::aStar(string vertex, string des
             }
         }
         notCompleted.erase(index.first);
-        cout << index.first << " found";
         if (index.first == destination) {
             return paths;
         }
@@ -142,18 +133,22 @@ map<string, vector<pair<string, double>>> Graph::aStar(string vertex, string des
 
 vector<pair<string, double>> Graph::movieStar(string vertex, string destination) {
     unordered_set<string> visited;
+    map<string, string> parents;
     queue<map<string, pair<string, double>>> q;
     map<string, vector<pair<string, double>>> BFS;
 
     q.push(adjList[vertex]);
     visited.insert(vertex);
-    //BFS[vertex].at(0).first = "total:";
-    //BFS[vertex].at(0).second = 0;
+    queue<string> current;
+    current.push(vertex);
     while(!q.empty()) {
         for (auto iter : q.front()) {
             if (visited.count(iter.first) == 0) {
+                parents[iter.first] = current.front();
                 visited.insert(iter.first);
                 q.push(adjList[iter.first]);
+                current.push(iter.first);
+                BFS[iter.first] = BFS[parents[iter.first]];
                 BFS[iter.first].push_back(iter.second);
             }
         }
@@ -161,6 +156,7 @@ vector<pair<string, double>> Graph::movieStar(string vertex, string destination)
             break;
         }
         q.pop();
+        current.pop();
     }
     return BFS[destination];
 }
