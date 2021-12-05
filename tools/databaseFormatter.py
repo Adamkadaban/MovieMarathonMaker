@@ -128,7 +128,7 @@ for line in actorToMovies:
 
 	actorIDstoActors[actorID] = actorName
 
-
+allActors = set()
 
 for movie in data:
 	actorIDs = movie[3]
@@ -143,7 +143,12 @@ for movie in data:
 
 	actorIDs.clear()
 	actorIDs.extend(actors)
+	for _ in actors:
+		allActors.add(_)
 
+
+
+print(f'Included {len(allActors)} actors/vertices')
 with open('ModernDatabase.tsv', 'w') as fout:
 	for line in data:
 	  temp = line[-1]
