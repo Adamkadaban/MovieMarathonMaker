@@ -7,17 +7,11 @@
 pair<string, double> getMin(map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
     //returns the movie that has not been found yet with the shortest path to it
     pair<string, double> currentShortest = make_pair("NULL", (double)INT_MAX); //shortest movie
-    map<string, double> totalRunLength; //total run length of all movies in a given movie's path
+    
     for (auto iter : paths) {
-        totalRunLength[iter.first] = 0; //initialization
-        for (int i = 0; i < iter.second.size(); i++) {
-            totalRunLength[iter.first] += iter.second.at(i).second; 
-        }
-    }
-    for (auto iter : totalRunLength) {
-        if (iter.second < currentShortest.second && avail.count(iter.first) == 1) { //if the current total run length is shorter than the saved run length...
+        if (iter.second.at(0).second < currentShortest.second && avail.count(iter.first) == 1) { //if the current total run length is shorter than the saved run length...
             currentShortest.first = iter.first;   //make the shortest total run length the current
-            currentShortest.second = iter.second;
+            currentShortest.second = iter.second.at(0).second;
         }
     }
     return currentShortest;
@@ -66,20 +60,21 @@ map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex) {
     unordered_set<string> completed;
     unordered_set<string> notCompleted;
     for (auto iter : adjList) {
-        paths[iter.first].push_back(make_pair("NULL", (double)INT_MAX)); //insert starting value 
+        paths[iter.first].push_back(make_pair("total:", (double)INT_MAX)); //insert starting value 
         notCompleted.insert(iter.first);
     }
     
-    (paths[vertex]).clear();
+    (paths[vertex]).at(0).second = 0;
     
     while (!notCompleted.empty()) {
         pair<string, double> index = getMin(paths, notCompleted);
         cout << index.first << "found!" << endl;
         for (auto iter : adjList[index.first]) {
             
-            if (getSum(paths[index.first]) + iter.second.second < getSum(paths[iter.first])) {
+            if (paths[index.first].at(0).second + iter.second.second < paths[iter.first].at(0).second) {
                 paths[iter.first] = paths[index.first];
                 paths[iter.first].push_back(iter.second);
+                paths[iter.first].at(0).second += iter.second.second;
                 parents[iter.first] = index.first;
             }
         }

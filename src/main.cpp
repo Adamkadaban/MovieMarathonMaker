@@ -7,7 +7,7 @@ using namespace std;
 
 void readData(Graph& g) {
     string line;
-    ifstream myfile ("../tools/Database.tsv");
+    ifstream myfile ("../tools/database2.tsv");
     vector<string> vInput;
     if (myfile.is_open()) {
         while (getline (myfile, line)) {
