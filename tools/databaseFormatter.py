@@ -7,20 +7,22 @@ Note: This only returns what is listed as a "movie" on the IMDB database
 
 	  Some minor characters will also be excluded
 
-	  Only includes movies, Year >= 2010
+	  Only includes movies in English
 
 '''
-
+import sys
 import csv
 actorToMovies = csv.reader(open('resources/name.basics.tsv'), delimiter="\t")
 movieIDToInfo = csv.reader(open('resources/title.basics.tsv'), delimiter="\t")
-#titleAKAs = csv.reader(open('resources/title.akas.tsv'), delimiter="\t")
+titleAKAs = csv.reader(open('resources/title.akas.tsv'), delimiter="\t")
 actorIDToActor = csv.reader(open('resources/title.principals.tsv'), delimiter="\t")
 
+csv.field_size_limit(sys.maxsize)
 
 # exclude first line in file (which is the table header) 
 next(actorToMovies)
 next(movieIDToInfo)
+next(titleAKAs)
 next(actorIDToActor)
 
 
@@ -54,24 +56,37 @@ def getMovies(actor):
 data = []
 
 
+# generate movies and respective languages
+movieIDToLanguage = {}
+for line in titleAKAs:
+	titleID = line[0]
+	lang = line[4]
+
+	movieIDToLanguage[titleID] = lang
+
+
 # Adding all movies 
 for line in movieIDToInfo:
 	# data for filtering
 	movieType = line[1]
 	runtime = line[7]
 	year = line[5]
+	movieID = line[0]
 
+	try:
+		lang = movieIDToLanguage[movieID]
+		if(movieType == "movie" and runtime != "\\N" and year != "\\N" and ( lang == "en" or lang == "EN")):
+			
+			movieName = line[2]
+			
+			movieName += " (" + str(year) + ")"
 
-	if(movieType == "movie" and runtime != "\\N" and year != "\\N" and int(year) >= 2010):
-		movieID = line[0]
-		movieName = line[2]
-		
-		movieName += " (" + str(year) + ")"
-
-		
-		# movie ID, movie Title, Movie runtime, actorIDs
-		temp = [movieID, movieName, runtime, []]
-		data.append(temp)
+			
+			# movie ID, movie Title, Movie runtime, actorIDs
+			temp = [movieID, movieName, runtime, []]
+			data.append(temp)
+	except:
+		pass
 
 
 # generate relations between movie ID and actor IDs
@@ -121,11 +136,8 @@ for movie in data:
 
 	actorIDs.clear()
 	actorIDs.extend(actors)
-	
 
-# print(data[0])
-
-with open('UltraModernDatabase.tsv', 'w') as fout:
+with open('Database.tsv', 'w') as fout:
 	for line in data:
 	  temp = line[-1]
 	  del line[-1]
