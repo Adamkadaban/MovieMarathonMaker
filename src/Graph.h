@@ -16,6 +16,7 @@ class Graph {
         map<string, vector<pair<string, double>>> dijkstra(string vertex, string destination);
         map<string, vector<pair<string, double>>> aStar(string vertex, string destination);
         pair<string, double> getH(map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail);
+        vector<pair<string, double>> movieStar(string vertex, string destination);
         //other search here
 };
 

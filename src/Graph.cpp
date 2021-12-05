@@ -139,3 +139,28 @@ map<string, vector<pair<string, double>>> Graph::aStar(string vertex, string des
     }
     return paths;
     }
+
+vector<pair<string, double>> Graph::movieStar(string vertex, string destination) {
+    unordered_set<string> visited;
+    queue<map<string, pair<string, double>>> q;
+    map<string, vector<pair<string, double>>> BFS;
+
+    q.push(adjList[vertex]);
+    visited.insert(vertex);
+    //BFS[vertex].at(0).first = "total:";
+    //BFS[vertex].at(0).second = 0;
+    while(!q.empty()) {
+        for (auto iter : q.front()) {
+            if (visited.count(iter.first) == 0) {
+                visited.insert(iter.first);
+                q.push(adjList[iter.first]);
+                BFS[iter.first].push_back(iter.second);
+            }
+        }
+        if (visited.count(destination) == 1) {
+            break;
+        }
+        q.pop();
+    }
+    return BFS[destination];
+}
