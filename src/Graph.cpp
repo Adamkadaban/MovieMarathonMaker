@@ -2,6 +2,8 @@
 #include <climits>
 #include <vector>
 #include <iostream>
+#include <queue>
+#include <algorithm>
 #include "Graph.h"
 
 pair<string, double> getMin(map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
@@ -56,8 +58,6 @@ double getSum(vector<pair<string, double>>& v) {
 
 map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex) {
     map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
-    map<string, string> parents; 
-    unordered_set<string> completed;
     unordered_set<string> notCompleted;
     for (auto iter : adjList) {
         paths[iter.first].push_back(make_pair("total:", (double)INT_MAX)); //insert starting value 
@@ -65,26 +65,20 @@ map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex) {
     }
     
     (paths[vertex]).at(0).second = 0;
-    
+
+
     while (!notCompleted.empty()) {
         pair<string, double> index = getMin(paths, notCompleted);
-        cout << index.first << "found!" << endl;
         for (auto iter : adjList[index.first]) {
             
             if (paths[index.first].at(0).second + iter.second.second < paths[iter.first].at(0).second) {
                 paths[iter.first] = paths[index.first];
                 paths[iter.first].push_back(iter.second);
                 paths[iter.first].at(0).second += iter.second.second;
-                parents[iter.first] = index.first;
             }
         }
-        if (notCompleted.count(index.first) != 0) {
-           notCompleted.erase(index.first);
-        }
-        else {
-            break;
-        }
-        completed.insert(index.first);
+        cout << index.first << " found!" << endl;
+        notCompleted.erase(index.first);
     }
     return paths;
 }
