@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) {
     string function = argv[2];
     if (function == "dijkstra") {
         t.start();
-        map<string, vector<pair<string, double>>> paths = g.dijkstra(from, to);
+        unordered_map<string, vector<pair<string, double>>> paths = g.dijkstra(from, to);
         t.stop();
         for (int i = 0; i < paths[to].size(); i++) {
             cout << paths[to].at(i).first << " ";
@@ -99,7 +99,7 @@ int main(int argc, char* argv[]) {
     }
     else if (function == "aStar") {
         t.start();
-        map<string, vector<pair<string, double>>> paths2 = g.aStar(from, to);
+        unordered_map<string, vector<pair<string, double>>> paths2 = g.aStar(from, to);
         t.stop();
         paths2[to].at(0).second = 0;
         for (int i = 1; i < paths2[to].size(); i++) {
@@ -119,15 +119,15 @@ int main(int argc, char* argv[]) {
         for (int i = 0; i < movieS.size(); i++) {
             total += movieS.at(i).second;
         }
-        cout << "total: " << total;
+        cout << "total: " << total << endl;
         for (int i = 0; i < movieS.size(); i++) {
-            cout << movieS.at(i).first << " " << movieS.at(i).second;
+            cout << movieS.at(i).first << " " << movieS.at(i).second << endl;
         }
         cout << "movieStar elapsed time: " << t.elapsedSeconds() << " seconds";
     }
     else if (function == "compare") {
         t.start();
-        map<string, vector<pair<string, double>>> paths = g.dijkstra(from, to);
+        unordered_map<string, vector<pair<string, double>>> paths = g.dijkstra(from, to);
         t.stop();
         for (int i = 0; i < paths[to].size(); i++) {
             cout << paths[to].at(i).first << " ";
@@ -136,7 +136,7 @@ int main(int argc, char* argv[]) {
         cout << "dijkstra elapsed time: " << t.elapsedSeconds() << " seconds" << endl;
 
         t.start();
-        map<string, vector<pair<string, double>>> paths2 = g.aStar(from, to);
+        unordered_map<string, vector<pair<string, double>>> paths2 = g.aStar(from, to);
         t.stop();
         paths2[to].at(0).second = 0;
         for (int i = 1; i < paths2[to].size(); i++) {

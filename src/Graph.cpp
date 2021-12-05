@@ -7,7 +7,7 @@
 #include "Graph.h"
 
 //Used for A*: Instead of favoring the movie w/ the shortest dist of connections, favor the movie with the largest
-pair<string, double> Graph::getH(map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
+pair<string, double> Graph::getH(unordered_map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
     //returns the movie that has not been found yet with the shortest path to it
     pair<string, int> largestOutdeg = make_pair("NULL", (double)0); //shortest movie
     
@@ -20,7 +20,7 @@ pair<string, double> Graph::getH(map<string, vector<pair<string, double>>>& path
     return make_pair(largestOutdeg.first, paths[largestOutdeg.first].at(0).second);
 }
 
-pair<string, double> getMin(map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
+pair<string, double> getMin(unordered_map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
     //returns the movie that has not been found yet with the shortest path to it
     pair<string, double> currentShortest = make_pair("NULL", (double)INT_MAX); //shortest movie
     
@@ -57,7 +57,7 @@ pair<string, double> Graph::getFilm(string actor1, string actor2) {
     return make_pair("NULL", -1); //case for no movie between two actors
 }
 
-map<string, pair<string, double>> Graph::getAdjacent(string vertex) {
+unordered_map<string, pair<string, double>> Graph::getAdjacent(string vertex) {
     return adjList[vertex];
 }
 
@@ -70,8 +70,8 @@ double getSum(vector<pair<string, double>>& v) {
     return sum;
 }
 
-map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex, string destination) {
-    map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
+unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex, string destination) {
+    unordered_map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
     unordered_set<string> notCompleted;
     for (auto iter : adjList) {
         paths[iter.first].push_back(make_pair("total:", (double)INT_MAX)); //insert starting value 
@@ -99,8 +99,8 @@ map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex, string 
     return paths;
 }
 
-map<string, vector<pair<string, double>>> Graph::aStar(string vertex, string destination) {
-    map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
+unordered_map<string, vector<pair<string, double>>> Graph::aStar(string vertex, string destination) {
+    unordered_map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
     unordered_set<string> notCompleted;
     for (auto iter : adjList) {
         paths[iter.first].push_back(make_pair("total:", (double)INT_MAX)); //insert starting value 
@@ -133,9 +133,9 @@ map<string, vector<pair<string, double>>> Graph::aStar(string vertex, string des
 
 vector<pair<string, double>> Graph::movieStar(string vertex, string destination) {
     unordered_set<string> visited;
-    map<string, string> parents;
-    queue<map<string, pair<string, double>>> q;
-    map<string, vector<pair<string, double>>> BFS;
+    unordered_map<string, string> parents;
+    queue<unordered_map<string, pair<string, double>>> q;
+    unordered_map<string, vector<pair<string, double>>> BFS;
 
     q.push(adjList[vertex]);
     visited.insert(vertex);
