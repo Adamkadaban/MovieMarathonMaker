@@ -6,6 +6,37 @@
 #include <algorithm>
 #include "Graph.h"
 
+
+//Min-Heap comparison overloading (myComp overloading inspired by geeksforgeeks)
+//Allows for use of pair in minHeap
+typedef pair<string, double> pd;
+
+struct myComp {
+
+    constexpr bool operator()(pair<string, double> const& a,pair<string, double> const& b)const noexcept
+    {
+        return a.second > b.second;
+    }
+};
+
+//Fib-Heap GetMin...
+pair<string, double> getFibMin(unordered_map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail){
+    priority_queue<pd, vector<pd>, myComp> minHeap;
+    //add each pair in paths to the minHeap.
+    for (auto iter : paths) {
+        if(avail.count(iter.first) == 1)
+            minHeap.push(iter.second.at(0));
+    }
+
+    pair<string, double> min = minHeap.top();
+    return min;
+    //SO: I need to fib-Heap paths; a map<actors, list of <connecting movies>>
+    //RESULT: should be the shortest connecting movie. So fib-heap the pairs.
+
+}
+
+
+
 //Used for A*: Instead of favoring the movie w/ the shortest dist of connections, favor the movie with the largest
 pair<string, double> Graph::getH(unordered_map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
     //returns the movie that has not been found yet with the shortest path to it
@@ -82,7 +113,8 @@ unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string verte
 
 
     while (!notCompleted.empty()) {
-        pair<string, double> index = getMin(paths, notCompleted);
+        //pair<string, double> index = getMin(paths, notCompleted);
+        pair<string, double> index = getFibMin(paths, notCompleted);
         for (auto iter : adjList[index.first]) {
             
             if (paths[index.first].at(0).second + iter.second.second < paths[iter.first].at(0).second) {
@@ -98,6 +130,51 @@ unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string verte
     }
     return paths;
 }
+
+/*unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex, string destination) {
+    unordered_map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
+    priority_queue<pd, vector<pd>, myComp> minHeap;
+    unordered_set<string> notCompleted;
+
+    minHeap.push(make_pair(vertex, 0.0));//initialize src vertex as root, w/ dist 0
+
+    for (auto iter : adjList) {
+        paths[iter.first].push_back(make_pair("total:", (double)INT_MAX)); //insert starting value 
+        notCompleted.insert(iter.first);
+        //minHeap.push(iter.second.at(0)); //causes M_construct null not valid error.
+    }
+
+    //this adds every pair in paths to the minheap
+    for (auto iter : paths) {
+        minHeap.push(iter.second.at(0));     
+    }
+
+    (paths[vertex]).at(0).second = 0;
+
+    while(!minHeap.empty()){ //while not empty
+      //extract min
+      pair<string, double> index = minHeap.top();
+      minHeap.pop();
+      notCompleted.erase(index.first);
+      //For every adjacent vertex v of index, check if v is in Min Heap. 
+      //If v is in Min Heap and distance value is more than weight of u-v plus distance value of u, then update the distance value of v.
+      for (auto iter : adjList[index.first]) {
+          if(notCompleted.count(iter.first) == 1){ //if not already in heap
+            if (paths[index.first].at(0).second + iter.second.second < paths[iter.first].at(0).second) {
+                paths[iter.first] = paths[index.first];
+                paths[iter.first].push_back(iter.second);
+                paths[iter.first].at(0).second += iter.second.second;
+            }
+          }
+        }
+        if (index.first == destination) {
+            //this is never reached. my minheap is emptying before it finds the solution.
+            return paths;
+        }
+    }
+
+    return paths;  
+}*/
 
 unordered_map<string, vector<pair<string, double>>> Graph::aStar(string vertex, string destination) {
     unordered_map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
