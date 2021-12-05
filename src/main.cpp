@@ -38,6 +38,11 @@ int main() {
     readData(g);
     cout << "data read!" << endl;
     map<string, vector<pair<string, double>>> paths = g.dijkstra("Daniel Radcliffe");
+    //map<string, vector<pair<string, double>>> paths2 = g.aStar("Daniel Radcliffe");
+    /*for (int i = 0; i < paths2["Emma Watson"].size(); i++) {
+        cout << paths2["Emma Watson"].at(i).first << " ";
+        cout << paths2["Emma Watson"].at(i).second << " ";
+    }*/
     for (int i = 0; i < paths["Emma Watson"].size(); i++) {
         cout << paths["Emma Watson"].at(i).first << " ";
         cout << paths["Emma Watson"].at(i).second << " ";
