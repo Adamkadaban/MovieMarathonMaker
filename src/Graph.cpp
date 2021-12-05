@@ -7,24 +7,17 @@
 #include "Graph.h"
 
 //Used for A*: Instead of favoring the movie w/ the shortest dist of connections, favor the movie with the largest
-pair<string, double> getH(map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
-    cout << "Entering getH " << endl;
+pair<string, double> Graph::getH(map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
     //returns the movie that has not been found yet with the shortest path to it
-    pair<string, double> currentMax = make_pair("NULL", (double)INT_MIN); //shortest movie
-    map<string, double> totalRunLength; //total run length of all movies in a given movie's path
-    for (auto iter : paths) {
-        //totalRunLength[iter.first] = 0; //initialization
-        //for (int i = 0; i < iter.second.size(); i++) {
-            totalRunLength[iter.first] = iter.second.size();
-       // }
-    }
-    for (auto iter : totalRunLength) {
-        if (iter.second > currentMax.second && avail.count(iter.first) == 1) { //if the current total run length is shorter than the saved run length...
-            currentMax.first = iter.first;   //make the shortest total run length the current
-            currentMax.second = iter.second;
+    pair<string, int> largestOutdeg = make_pair("NULL", (double)0); //shortest movie
+    
+    for (auto iter : adjList) {
+        if (iter.second.size() > largestOutdeg.second && avail.count(iter.first) == 1) {
+            largestOutdeg.second = iter.second.size();
+            largestOutdeg.first = iter.first;
         }
     }
-    return currentMax;
+    return make_pair(largestOutdeg.first, paths[largestOutdeg.first].at(0).second);
 }
 
 pair<string, double> getMin(map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
@@ -77,7 +70,7 @@ double getSum(vector<pair<string, double>>& v) {
     return sum;
 }
 
-map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex) {
+map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex, string destination) {
     map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
     unordered_set<string> notCompleted;
     for (auto iter : adjList) {
@@ -98,41 +91,45 @@ map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex) {
                 paths[iter.first].at(0).second += iter.second.second;
             }
         }
-        cout << index.first << " found!" << endl;
         notCompleted.erase(index.first);
+        if (index.first == destination) {
+            return paths;
+        }
     }
     return paths;
 }
-map<string, vector<pair<string, double>>> Graph::aStar(string vertex) {
+
+map<string, vector<pair<string, double>>> Graph::aStar(string vertex, string destination) {
     map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
-    map<string, string> parents;
-    unordered_set<string> completed;
     unordered_set<string> notCompleted;
     for (auto iter : adjList) {
-        paths[iter.first].push_back(make_pair("NULL", (double)INT_MAX)); //insert starting value
+        paths[iter.first].push_back(make_pair("total:", (double)INT_MAX)); //insert starting value 
         notCompleted.insert(iter.first);
     }
+    
+    (paths[vertex]).at(0).second = 0;
 
-    (paths[vertex]).clear();
 
     while (!notCompleted.empty()) {
         pair<string, double> index = getH(paths, notCompleted);
-        cout << index.first << "found!" << endl;
         for (auto iter : adjList[index.first]) {
-
-        if (getSum(paths[index.first]) + iter.second.second < getSum(paths[iter.first])) {
-            paths[iter.first] = paths[index.first];
-            paths[iter.first].push_back(iter.second);
-            parents[iter.first] = index.first;
+            if (paths[index.first].at(0).second + iter.second.second < paths[iter.first].at(0).second) {
+                paths[iter.first] = paths[index.first];
+                paths[iter.first].push_back(iter.second);
+                paths[iter.first].at(0).second += iter.second.second;
+            }
+            if (iter.first == destination) {
+                paths[iter.first] = paths[index.first];
+                paths[iter.first].push_back(iter.second);
+                paths[iter.first].at(0).second += iter.second.second;
+                return paths;
+            }
         }
+        notCompleted.erase(index.first);
+        cout << index.first << " found";
+        if (index.first == destination) {
+            return paths;
         }
-        if (notCompleted.count(index.first) != 0) {
-            notCompleted.erase(index.first);
-        }
-        else {
-            break;
-        }
-    completed.insert(index.first);
     }
-return paths;
-}
+    return paths;
+    }
