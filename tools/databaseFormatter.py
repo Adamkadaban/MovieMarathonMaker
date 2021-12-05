@@ -7,6 +7,8 @@ Note: This only returns what is listed as a "movie" on the IMDB database
 
 	  Some minor characters will also be excluded
 
+	  Only movies made after 2000 will be included
+
 	  Only includes movies in English
 
 '''
@@ -62,7 +64,11 @@ for line in titleAKAs:
 	titleID = line[0]
 	lang = line[4]
 
-	movieIDToLanguage[titleID] = lang
+	if(titleID not in movieIDToLanguage):
+		movieIDToLanguage[titleID] = lang
+
+	if(movieIDToLanguage[titleID] != "en" and movieIDToLanguage[titleID] != "EN"):
+		movieIDToLanguage[titleID] = lang
 
 
 # Adding all movies 
@@ -75,7 +81,8 @@ for line in movieIDToInfo:
 
 	try:
 		lang = movieIDToLanguage[movieID]
-		if(movieType == "movie" and runtime != "\\N" and year != "\\N" and ( lang == "en" or lang == "EN")):
+		# print(lang)
+		if(movieType == "movie" and runtime != "\\N" and year != "\\N" and int(year) >= 2000 and ( lang == "en" or lang == "EN")):
 			
 			movieName = line[2]
 			
@@ -137,7 +144,7 @@ for movie in data:
 	actorIDs.clear()
 	actorIDs.extend(actors)
 
-with open('Database.tsv', 'w') as fout:
+with open('ModernDatabase.tsv', 'w') as fout:
 	for line in data:
 	  temp = line[-1]
 	  del line[-1]
