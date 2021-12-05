@@ -7,7 +7,7 @@ Note: This only returns what is listed as a "movie" on the IMDB database
 
 	  Some minor characters will also be excluded
 
-	  Only includes movies, Year >= 2000
+	  Only includes movies, Year >= 2010
 
 '''
 
@@ -62,7 +62,7 @@ for line in movieIDToInfo:
 	year = line[5]
 
 
-	if(movieType == "movie" and runtime != "\\N" and year != "\\N" and int(year) >= 2000):
+	if(movieType == "movie" and runtime != "\\N" and year != "\\N" and int(year) >= 2010):
 		movieID = line[0]
 		movieName = line[2]
 		
@@ -125,7 +125,7 @@ for movie in data:
 
 # print(data[0])
 
-with open('ModernDatabase.tsv', 'w') as fout:
+with open('UltraModernDatabase.tsv', 'w') as fout:
 	for line in data:
 	  temp = line[-1]
 	  del line[-1]
