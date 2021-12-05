@@ -19,24 +19,6 @@ struct myComp {
     }
 };
 
-//Fib-Heap GetMin...
-pair<string, double> getFibMin(unordered_map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail){
-    priority_queue<pd, vector<pd>, myComp> minHeap;
-    //add each pair in paths to the minHeap.
-    for (auto iter : paths) {
-        if(avail.count(iter.first) == 1)
-            minHeap.push(iter.second.at(0));
-    }
-
-    pair<string, double> min = minHeap.top();
-    return min;
-    //SO: I need to fib-Heap paths; a map<actors, list of <connecting movies>>
-    //RESULT: should be the shortest connecting movie. So fib-heap the pairs.
-
-}
-
-
-
 //Used for A*: Instead of favoring the movie w/ the shortest dist of connections, favor the movie with the largest
 pair<string, double> Graph::getH(unordered_map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
     //returns the movie that has not been found yet with the shortest path to it
@@ -113,8 +95,7 @@ unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string verte
 
 
     while (!notCompleted.empty()) {
-        //pair<string, double> index = getMin(paths, notCompleted);
-        pair<string, double> index = getFibMin(paths, notCompleted);
+        pair<string, double> index = getMin(paths, notCompleted);
         for (auto iter : adjList[index.first]) {
             
             if (paths[index.first].at(0).second + iter.second.second < paths[iter.first].at(0).second) {
@@ -131,6 +112,8 @@ unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string verte
     return paths;
 }
 
+
+//FIB HEAP DIJKSTRA IN PROGRESS
 /*unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex, string destination) {
     unordered_map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
     priority_queue<pd, vector<pd>, myComp> minHeap;
