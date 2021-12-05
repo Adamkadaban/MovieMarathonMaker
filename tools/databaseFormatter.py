@@ -7,7 +7,7 @@ Note: This only returns what is listed as a "movie" on the IMDB database
 
 	  Some minor characters will also be excluded
 
-	  Only movies made after 2000 will be included
+	  Only movies made on and after 2000 will be included
 
 	  Only includes movies in English
 
