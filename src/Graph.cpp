@@ -74,18 +74,12 @@ map<string, vector<pair<string, double>>> Graph::dijkstra(string vertex) {
     
     while (!notCompleted.empty()) {
         pair<string, double> index = getMin(paths, notCompleted);
-        
+        cout << index.first << "found!" << endl;
         for (auto iter : adjList[index.first]) {
             
             if (getSum(paths[index.first]) + iter.second.second < getSum(paths[iter.first])) {
-                if (paths[iter.first].at(0).second == (double)INT_MAX) {
-                    paths[iter.first] = paths[index.first];
-                    paths[iter.first].push_back(iter.second);
-                }
-                else {
-                    paths[iter.first].insert(end(paths[iter.first]), begin(paths[index.first]), end(paths[index.first]));
-                    paths[iter.first].push_back(iter.second);
-                }
+                paths[iter.first] = paths[index.first];
+                paths[iter.first].push_back(iter.second);
                 parents[iter.first] = index.first;
             }
         }
