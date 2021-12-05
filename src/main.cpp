@@ -37,16 +37,20 @@ int main() {
     Graph g;
     readData(g);
     cout << "data read!" << endl;
-   // map<string, vector<pair<string, double>>> paths = g.dijkstra("Daniel Radcliffe");
     map<string, vector<pair<string, double>>> paths2 = g.aStar("Daniel Radcliffe", "Emma Watson");
+    paths2["Emma Watson"].at(0).second = 0;
+    for (int i = 1; i < paths2["Emma Watson"].size(); i++) {
+        paths2["Emma Watson"].at(0).second += paths2["Emma Watson"].at(i).second;
+    }
     for (int i = 0; i < paths2["Emma Watson"].size(); i++) {
         cout << paths2["Emma Watson"].at(i).first << " ";
         cout << paths2["Emma Watson"].at(i).second << " ";
     }
-    /*for (int i = 0; i < paths["Emma Watson"].size(); i++) {
+    map<string, vector<pair<string, double>>> paths = g.dijkstra("Daniel Radcliffe", "Emma Watson");
+    for (int i = 0; i < paths["Emma Watson"].size(); i++) {
         cout << paths["Emma Watson"].at(i).first << " ";
         cout << paths["Emma Watson"].at(i).second << " ";
-    }*/
+    }
     cout << "Test" << endl;
     return 0;
 }

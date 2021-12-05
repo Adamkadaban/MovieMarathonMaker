@@ -114,11 +114,17 @@ map<string, vector<pair<string, double>>> Graph::aStar(string vertex, string des
         pair<string, double> index = getH(paths, notCompleted);
         for (auto iter : adjList[index.first]) {
             if (paths[index.first].at(0).second + iter.second.second < paths[iter.first].at(0).second) {
+                if (paths[iter.first].at(0).second == INT_MAX) {
+                    paths[iter.first].at(0).second = 0;
+                }
                 paths[iter.first] = paths[index.first];
                 paths[iter.first].push_back(iter.second);
                 paths[iter.first].at(0).second += iter.second.second;
             }
             if (iter.first == destination) {
+                if (paths[iter.first].at(0).second == INT_MAX) {
+                    paths[iter.first].at(0).second = 0;
+                }
                 paths[iter.first] = paths[index.first];
                 paths[iter.first].push_back(iter.second);
                 paths[iter.first].at(0).second += iter.second.second;
