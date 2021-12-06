@@ -1,0 +1,16 @@
+#!/bin/sh
+echo "[*] Removing leftover .tsv files"
+rm *.tsv 2>/dev/null
+echo "[*] Removing leftover .gz files"
+rm *.gz 2>/dev/null
+
+echo "\n[*] Downloading files"
+
+wget "https://datasets.imdbws.com/name.basics.tsv.gz" -q --show-progress
+wget "https://datasets.imdbws.com/title.basics.tsv.gz" -q --show-progress
+wget "https://datasets.imdbws.com/title.akas.tsv.gz" -q --show-progress
+wget "https://datasets.imdbws.com/title.principals.tsv.gz" -q --show-progress
+
+echo "\n[*] Extracting files"
+gunzip *.gz
+echo "\n[!] Done!"
