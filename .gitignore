@@ -1,6 +1,8 @@
 # Ignore exes
 *.exe
+/src/main
 
 # Ignore base database files
 /tools/resources/*.tsv
 /tools/resources/*.gz
+
