@@ -40,7 +40,6 @@ async def on_message(message):
     userMessage = str(message.content)
     channel = str(message.channel.name)
 
-    ins = getParams(message.content)
     # prevents bot from responding to itself
     if message.author == client.user:
         return
@@ -48,6 +47,8 @@ async def on_message(message):
     if message.content.split()[0] == '!MovieMarathonMaker' or message.content.split()[0] == "!MM":
         if(message.content == "!MovieMarathonMaker" or message.content == "!MM" or "-h" in message.content.split()) :
             await message.channel.send('```Need help?\n\tShow this menu:\n\t\t!MovieMarathonMaker -h\n\n\tMake a movie marathon:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>"\n\n\tShort on time?:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>" hurry\n\n\tReally short on time?:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>" super hurry\n\n\tCompare all algorithms:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>" compare```')
+        ins = getParams(message.content)
+
         fro = ins[1]
         to = ins[2]
         if(len(ins) == 3):
