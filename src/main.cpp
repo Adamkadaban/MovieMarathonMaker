@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
         cout << "\n\nExamples:\n";
         cout << "\t" << argv[0] << " \"Emma Watson\" \"dijkstra\" \"Hugh Laurie\"\n";
         cout << "\n\nAlgorithm options:\n";
-        cout << "\tDijkstras - Most accurate algorithm\n";
+        cout << "\tdijkstra - Most accurate algorithm\n";
         cout << "\taStar - Faster, slightly less accurate algorithm\n";
         cout << "\tmovieStar - Fastest, but least accurate algorithm\n";
         cout << "\tcompare - Do all of the above\n";
