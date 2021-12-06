@@ -4,6 +4,20 @@ import sys
 import discord
 from dotenv import load_dotenv
 
+
+
+# sets working directory to source directory
+os.chdir('..')
+
+def getParams(s):
+    r = s.split('" "')
+    firstPart = r[0].split(' "')
+    lastPart = r[1].split('" ')
+    if(len(lastPart) == 1):
+        lastPart[0] = lastPart[0][:-1]
+    r = firstPart + lastPart
+    print(r)
+    return r
 load_dotenv()
 TOKEN = os.getenv('OTE2ODM0ODczNTgxMzc1NTU5.Yav7Aw.mDNecNEjBhm34N_TRsnqlw27I1I')
 
@@ -26,6 +40,7 @@ async def on_message(message):
     userMessage = str(message.content)
     channel = str(message.channel.name)
 
+    ins = getParams(message.content)
     # prevents bot from responding to itself
     if message.author == client.user:
         return
@@ -33,9 +48,19 @@ async def on_message(message):
     if message.content.split()[0] == '!MovieMarathonMaker' or message.content.split()[0] == "!MM":
         if(message.content == "!MovieMarathonMaker" or message.content == "!MM" or "-h" in message.content.split()) :
             await message.channel.send('```Need help?\n\tShow this menu:\n\t\t!MovieMarathonMaker -h\n\n\tMake a movie marathon:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>"\n\n\tShort on time?:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>" hurry\n\n\tReally short on time?:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>" super hurry\n\n\tCompare all algorithms:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>" compare```')
-        fro = message.content.split()[1]
-        to = message.content.split()[2]
-        
-
+        fro = ins[1]
+        to = ins[2]
+        if(len(ins) == 3):
+            output = os.popen(f'./main "{fro}" dijkstra "{to}"').read()
+            await message.channel.send(f'```{output}```')
+        elif(ins[3] == "hurry"):
+            output = os.popen(f'./main "{fro}" aStar "{to}"').read()
+            await message.channel.send(f'```{output}```')
+        elif(ins[3] == "super hurry"):
+            output = os.popen(f'./main "{fro}" movieStar "{to}"').read()
+            await message.channel.send(f'```{output}```')
+        elif(ins[3] == "compare"):
+            output = os.popen(f'./main "{fro}" compare "{to}"').read()
+            await message.channel.send(f'```{output}```')
 #token for server it runs in
 client.run('OTE2ODM0ODczNTgxMzc1NTU5.Yav7Aw.mDNecNEjBhm34N_TRsnqlw27I1I')
