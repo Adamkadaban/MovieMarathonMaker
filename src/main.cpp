@@ -78,24 +78,41 @@ void readData(Graph& g) {
 
 int main(int argc, char* argv[]) {
     if (argc < 4) {
-        cout << "invalid input!" << endl;
+        cout << "[!] Invalid input!" << endl;
+        cout << "Usage:\n";
+        cout << "\t" << argv[0] << " <from actor> <algorithm> <to actor>" << endl;
+        cout << "\n\nExamples:\n";
+        cout << "\t" << argv[0] << " \"Emma Watson\" \"dijkstra\" \"Hugh Laurie\"\n";
+        cout << "\n\nAlgorithm options:\n";
+        cout << "\tDijkstras - Most accurate algorithm\n";
+        cout << "\taStar - Faster, slightly less accurate algorithm\n";
+        cout << "\tmovieStar - Fastest, but least accurate algorithm\n";
+        cout << "\tcompare - Do all of the above\n";
+
         return -1;
     }
     Graph g;
+    cout << "[*] Reading in hundreds of thousands of movies!" << endl;
     readData(g);
+    cout << "[*] Done!\n" << endl;
     Timer t;
+
     string from = argv[1];
     string to = argv[3];
     string function = argv[2];
+
+    cout << "[*] Starting algorithm...\n";
     if (function == "dijkstra") {
         t.start();
         unordered_map<string, vector<pair<string, double>>> paths = g.dijkstra(from, to);
         t.stop();
-        for (int i = 0; i < paths[to].size(); i++) {
-            cout << paths[to].at(i).first << " ";
+
+        cout << "Your movie marathon will take " << paths[to].at(0).second << " minutes." << endl;
+        for (int i = 1; i < paths[to].size(); i++) {
+            cout << " - " << paths[to].at(i).first << " - ";
             cout << paths[to].at(i).second << endl;
         }
-        cout << "dijkstra elapsed time: " << t.elapsedSeconds() << " seconds";
+        cout << "[*] Dijkstra elapsed time: " << t.elapsedSeconds() << " seconds";
     }
     else if (function == "aStar") {
         t.start();
@@ -105,11 +122,12 @@ int main(int argc, char* argv[]) {
         for (int i = 1; i < paths2[to].size(); i++) {
             paths2[to].at(0).second += paths2[to].at(i).second;
         }
-        for (int i = 0; i < paths2[to].size(); i++) {
-            cout << paths2[to].at(i).first << " ";
+        cout << "Your movie marathon will take " << paths2[to].at(0).second << " minutes." << endl;
+        for (int i = 1; i < paths2[to].size(); i++) {
+            cout << " - " << paths2[to].at(i).first << " - ";
             cout << paths2[to].at(i).second << endl;
         }
-        cout << "aStar elapsed time: " << t.elapsedSeconds() << " seconds";
+        cout << "[*] aStar elapsed time: " << t.elapsedSeconds() << " seconds";
     }
     else if (function == "movieStar") {
         t.start();
@@ -119,21 +137,25 @@ int main(int argc, char* argv[]) {
         for (int i = 0; i < movieS.size(); i++) {
             total += movieS.at(i).second;
         }
-        cout << "total: " << total << endl;
+        cout << "Your movie marathon will take " << total << " minutes." << endl;
         for (int i = 0; i < movieS.size(); i++) {
-            cout << movieS.at(i).first << " " << movieS.at(i).second << endl;
+            cout << " - " << movieS.at(i).first << " - " << movieS.at(i).second << endl;
         }
-        cout << "movieStar elapsed time: " << t.elapsedSeconds() << " seconds";
+        cout << "[*] movieStar elapsed time: " << t.elapsedSeconds() << " seconds";
     }
     else if (function == "compare") {
+        cout << "\nDijsktras:" << endl;
         t.start();
         unordered_map<string, vector<pair<string, double>>> paths = g.dijkstra(from, to);
         t.stop();
-        for (int i = 0; i < paths[to].size(); i++) {
-            cout << paths[to].at(i).first << " ";
+        cout << "Your movie marathon will take " << paths[to].at(0).second << " minutes." << endl;
+        for (int i = 1; i < paths[to].size(); i++) {
+            cout << " - " << paths[to].at(i).first << " - ";
             cout << paths[to].at(i).second << endl;
         }
-        cout << "dijkstra elapsed time: " << t.elapsedSeconds() << " seconds" << endl;
+        cout << "[*] Dijkstra elapsed time: " << t.elapsedSeconds() << " seconds\n" << endl;
+
+        cout << "A*:" << endl;
 
         t.start();
         unordered_map<string, vector<pair<string, double>>> paths2 = g.aStar(from, to);
@@ -142,11 +164,16 @@ int main(int argc, char* argv[]) {
         for (int i = 1; i < paths2[to].size(); i++) {
             paths2[to].at(0).second += paths2[to].at(i).second;
         }
-        for (int i = 0; i < paths2[to].size(); i++) {
-            cout << paths2[to].at(i).first << " ";
+        cout << "Your movie marathon will take " << paths2[to].at(0).second << " minutes." << endl;
+
+        for (int i = 1; i < paths2[to].size(); i++) {
+            cout << " - " << paths2[to].at(i).first << " ";
             cout << paths2[to].at(i).second << endl;
         }
-        cout << "aStar elapsed time: " << t.elapsedSeconds() << " seconds" << endl;
+        cout << "[*] A* elapsed time: " << t.elapsedSeconds() << " seconds\n" << endl;
+
+
+        cout << "movieStar:" << endl;
 
         t.start();
         vector<pair<string, double>> movieS = g.movieStar(from, to);
@@ -155,11 +182,15 @@ int main(int argc, char* argv[]) {
         for (int i = 0; i < movieS.size(); i++) {
             total += movieS.at(i).second;
         }
-        cout << "total: " << total << endl;
+        cout << "Your movie marathon will take " << total << " minutes." << endl;
         for (int i = 0; i < movieS.size(); i++) {
-            cout << movieS.at(i).first << " " << movieS.at(i).second << endl;
+            cout << " - " << movieS.at(i).first << " " << movieS.at(i).second << endl;
         }
-        cout << "movieStar elapsed time: " << t.elapsedSeconds() << " seconds";
+        cout << "[*] movieStar elapsed time: " << t.elapsedSeconds() << " seconds";
     }
+    else{
+        cout << "[!] Invalid search mode" << endl;
+    }
+    cout << endl;
     return 0;
 }
