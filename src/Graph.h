@@ -15,7 +15,7 @@ class Graph {
         unordered_map<string, pair<string, double>> getAdjacent(string vertex);
         unordered_map<string, vector<pair<string, double>>> dijkstra(string vertex, string destination);
         unordered_map<string, vector<pair<string, double>>> aStar(string vertex, string destination);
-        pair<string, double> getH(unordered_map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail);
+        pair<string, string> getH(unordered_map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail, unordered_set<string> completed);
         vector<pair<string, double>> movieStar(string vertex, string destination);
         //other search here
 };
