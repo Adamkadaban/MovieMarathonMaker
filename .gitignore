@@ -2,4 +2,5 @@
 *.exe
 
 # Ignore base database files
-/tools/resources/
+/tools/resources/*.tsv
+/tools/resources/*.gz
