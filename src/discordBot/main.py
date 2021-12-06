@@ -18,6 +18,9 @@ def getParams(s):
     r = firstPart + lastPart
     print(r)
     return r
+
+def help():
+    return 'Need help?\n\tShow this menu:\n\t\t!MovieMarathonMaker -h\n\n\tMake a movie marathon:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>"\n\n\tShort on time?:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>" hurry\n\n\tReally short on time?:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>" super hurry\n\n\tCompare all algorithms:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>" compare'
 load_dotenv()
 TOKEN = os.getenv('OTE2ODM0ODczNTgxMzc1NTU5.Yav7Aw.mDNecNEjBhm34N_TRsnqlw27I1I')
 
@@ -42,13 +45,12 @@ async def on_message(message):
 
     # prevents bot from responding to itself
     if message.author == client.user:
-        return
+        return 
 
     if message.content.split()[0] == '!MovieMarathonMaker' or message.content.split()[0] == "!MM":
         if(message.content == "!MovieMarathonMaker" or message.content == "!MM" or "-h" in message.content.split()) :
-            await message.channel.send('```Need help?\n\tShow this menu:\n\t\t!MovieMarathonMaker -h\n\n\tMake a movie marathon:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>"\n\n\tShort on time?:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>" hurry\n\n\tReally short on time?:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>" super hurry\n\n\tCompare all algorithms:\n\t\t!MovieMarathonMaker "<Actor 1>" "<Actor 2>" compare```')
+            await message.channel.send("```"+help()+"```")
         ins = getParams(message.content)
-
         fro = ins[1]
         to = ins[2]
         if(len(ins) == 3):
@@ -63,5 +65,9 @@ async def on_message(message):
         elif(ins[3] == "compare"):
             output = os.popen(f'./main "{fro}" compare "{to}"').read()
             await message.channel.send(f'```{output}```')
+        else:
+            await message.channel.send(f'```I don\'t know what **{ins[3]}** means\n{help()}```')
+
+
 #token for server it runs in
 client.run('OTE2ODM0ODczNTgxMzc1NTU5.Yav7Aw.mDNecNEjBhm34N_TRsnqlw27I1I')
