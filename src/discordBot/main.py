@@ -32,7 +32,7 @@ async def on_message(message):
 
     if message.content.split()[0] == '!MovieMarathonMaker':
         if(message.content == "!MovieMarathonMaker"):
-            await message.channel.send('```Need help?\n\tShow this menu:\n\t\t!MovieMarathonMaker -h\n\n\tMake a movie marathon:\n\t\t!MovieMarathonMaker <Actor 1> <Actor 2>\n\n\tShort on time?:\n\t\t!MovieMarathonMaker <Actor 1> <Actor 2> hurry```')
+            await message.channel.send('```Need help?\n\tShow this menu:\n\t\t!MovieMarathonMaker -h\n\n\tMake a movie marathon:\n\t\t!MovieMarathonMaker <Actor 1> <Actor 2>\n\n\tShort on time?:\n\t\t!MovieMarathonMaker <Actor 1> <Actor 2> hurry\n\n\tReally short on time?:\n\t\t!MovieMarathonMaker <Actor 1> <Actor 2> super hurry\n\n\tCompare all algorithms:\n\t\t!MovieMarathonMaker <Actor 1> <Actor 2> compare```')
         
 
 
