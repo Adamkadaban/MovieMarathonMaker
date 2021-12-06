@@ -19,18 +19,27 @@ struct myComp {
     }
 };
 
-//Used for A*: Instead of favoring the movie w/ the shortest dist of connections, favor the movie with the largest
-pair<string, double> Graph::getH(unordered_map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
-    //returns the movie that has not been found yet with the shortest path to it
-    pair<string, int> largestOutdeg = make_pair("NULL", (double)0); //shortest movie
-    
-    for (auto iter : adjList) {
-        if (iter.second.size() > largestOutdeg.second && avail.count(iter.first) == 1) {
+/*if (adjList[iter].size() > largestOutdeg.second && avail.count(adjList[iter]) == 1) {
             largestOutdeg.second = iter.second.size();
             largestOutdeg.first = iter.first;
+        }*/
+
+//Used for A*: Instead of favoring the movie w/ the shortest dist of connections, favor the movie with the largest
+pair<string, string> Graph::getH(unordered_map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail, unordered_set<string> completed) {
+    //returns the movie that has not been found yet with the shortest path to it
+    pair<string, int> largestOutdeg = make_pair("NULL", (double)0); //shortest movie
+    string pathto;
+    
+    for (auto iter : completed) {
+        for (auto i : adjList[iter]) {
+            if (adjList[i.first].size() > largestOutdeg.second && avail.count(i.first) == 1) {
+                largestOutdeg.second = adjList[i.first].size();
+                largestOutdeg.first = i.first;
+                pathto = iter;
+            }
         }
     }
-    return make_pair(largestOutdeg.first, paths[largestOutdeg.first].at(0).second);
+    return make_pair(largestOutdeg.first, pathto);
 }
 
 pair<string, double> getMin(unordered_map<string, vector<pair<string, double>>>& paths, unordered_set<string> avail) {
@@ -155,31 +164,34 @@ unordered_map<string, vector<pair<string, double>>> Graph::dijkstra(string verte
 unordered_map<string, vector<pair<string, double>>> Graph::aStar(string vertex, string destination) {
     unordered_map<string, vector<pair<string, double>>> paths; //read as map<actor, vector<movie>>
     unordered_set<string> notCompleted;
+    unordered_set<string> completed;
     for (auto iter : adjList) {
         paths[iter.first].push_back(make_pair("total:", (double)INT_MAX)); //insert starting value 
         notCompleted.insert(iter.first);
     }
     
     (paths[vertex]).at(0).second = 0;
+    completed.insert(vertex);
     
 
     while (!notCompleted.empty()) {
-        pair<string, double> index = getH(paths, notCompleted);
-        for (auto iter : adjList[index.first]) {
-                paths[iter.first] = paths[index.first];
-                paths[iter.first].push_back(iter.second);
-                paths[iter.first].at(0).second += iter.second.second;
-            if (iter.first == destination) {
-                paths[iter.first] = paths[index.first];
-                paths[iter.first].push_back(iter.second);
-                paths[iter.first].at(0).second += iter.second.second;
-                return paths;
+        pair<string, string> index = getH(paths, notCompleted, completed);
+        paths[index.first] = paths[index.second];
+        paths[index.first].push_back(make_pair((adjList[index.second])[index.first].first, (adjList[index.second])[index.first].second));
+        notCompleted.erase(index.first);
+        for (auto iter : completed) {
+            for (auto i : adjList[iter]) {
+                if (i.first == destination) {
+                    paths[destination] = paths[iter];
+                    paths[destination].push_back(make_pair((adjList[iter])[destination].first, (adjList[iter])[destination].second));
+                    return paths;
+                }
             }
         }
-        notCompleted.erase(index.first);
         if (index.first == destination) {
             return paths;
         }
+        completed.insert(index.first);
     }
     return paths;
     }
