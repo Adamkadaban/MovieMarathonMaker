@@ -21,7 +21,7 @@ Because this project is heavily technical with the implementation of multiple gr
 
 ### Complexity Analysis
 
-**Fibanacci Heap Dijkstra’s: O(Elog(V))**
+**Fibonacci Heap Dijkstra’s: O(Elog(V))**
 
 The complexity of our Fibonacci-Heap optimized Dijkstra’s algorithm is O(Elog(V)), where E represents the edges of our graph (movies), and V represents the vertices of our graph (actors). Because we used a min-heap to calculate the minimum path to take at each step, the number of edges (movies) that are compared is multiplied by the log of the number of vertices (actors) in our graph.
 
